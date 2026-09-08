@@ -1,0 +1,52 @@
+# 资源配置（未填或留空时，默认读取本地 source/img/ 对应的图片）
+#作者读取根目录_config.yml中author的内容，副标题读取subtitle
+#个人介绍的内容请用hexo new page about生成，请自行修改/source/about/index.md
+avatar: "" # 自定义头像URL。留空默认使用本地: /img/avatar.jpg（source目录下）
+background: "" # 自定义背景图URL。留空默认使用本地: /img/back.jpg（source目录下）
+
+# 侧边栏开关
+sidebar:
+  enable: true
+
+# 侧边栏菜单配置
+menu:
+  - name: "首页"
+    link: "/"
+    icon: "home" # 支持 Material Icons 名称，例如 home
+  - name: "归档 / 文章"
+    link: "/archives/"
+    icon: "archive"
+  - name: "关于"
+    link: "/about/"
+    icon: "fas fa-user" # 也支持 Font Awesome 类名
+
+# 打字效果配置 (参照 Butterfly 风格)
+subtitle_typed:
+  enable: true              # 是否开启打字效果
+  typeSpeed: 70             # 打字速度 (ms)
+  backSpeed: 40             # 退格速度 (ms)
+  startDelay: 300           # 开始延时 (ms)
+  backDelay: 1500           # 退格停顿延时 (ms)
+  loop: true                # 是否循环播放
+  subtitles: []             # 自定义多条循环字幕。如果留空，默认直接读取根目录 _config.yml 的 subtitle
+
+# 社交媒体链接（支持 font-awesome图标）
+social:
+  - name: Instagram
+    icon: fab fa-instagram
+    link: https://instagram.com/
+  - name: Email
+    icon: fas fa-envelope
+    link: mailto:your@email.com
+
+# 博客文章入口按钮
+blog_button:
+  enable: true
+  text: "阅读文章 / BLOG"
+  path: "/archives/"
+
+# 页脚配置
+footer:
+  custom_text:
+    enable: true
+    content: "这里是你的自定义内容，支持 HTML 标签，如 <a href='/'>关于我</a>"

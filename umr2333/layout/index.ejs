@@ -1,0 +1,87 @@
+<% 
+  var avatarUrl = theme.avatar || url_for('/img/avatar.jpg');
+
+  var aboutPage = site.pages.findOne({ path: 'about/index.html' });
+  var hasAboutContent = aboutPage && aboutPage.content && aboutPage.content.trim() !== '';
+
+  var typedSubtitles = [];
+  if (theme.subtitle_typed && theme.subtitle_typed.subtitles && theme.subtitle_typed.subtitles.length > 0) {
+    typedSubtitles = theme.subtitle_typed.subtitles;
+  } else if (config.subtitle) {
+    typedSubtitles = [config.subtitle];
+  }
+%>
+
+<div class="mdui-container home-wrapper">
+  <div class="mdui-row mdui-valign-center">
+    <div class="mdui-col-xs-12 mdui-col-md-8 mdui-col-offset-md-2">
+      
+      <div class="profile-card">
+        
+        <div class="profile-avatar-wrapper">
+          <img class="profile-avatar" src="<%= avatarUrl %>" alt="<%= config.author %>" />
+        </div>
+
+        <div class="profile-header">
+          <div class="profile-author"><%= config.author %></div>
+          
+          <p class="profile-motto">
+            <% if (theme.subtitle_typed && theme.subtitle_typed.enable && typedSubtitles.length > 0) { %>
+              <span id="subtitle-typed"></span>
+            <% } else { %>
+              <span><%= config.subtitle %></span>
+            <% } %>
+          </p>
+
+          <!-- 社交按钮（支持 Font Awesome 图标与 Material Icons） -->
+          <% if (theme.social && theme.social.length > 0) { %>
+            <div class="profile-social">
+              <% theme.social.forEach(function(item) { %>
+                <a href="<%= item.link %>" target="_blank" rel="noopener" class="social-icon-btn" mdui-tooltip="{content: '<%= item.name %>'}">
+                  <% if (item.icon.indexOf('fa') !== -1) { %>
+                    <i class="<%= item.icon %>"></i>
+                  <% } else { %>
+                    <i class="mdui-icon material-icons"><%= item.icon %></i>
+                  <% } %>
+                </a>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+
+        <% if (hasAboutContent) { %>
+          <div class="profile-divider"></div>
+          <div class="about-detail mdui-typo">
+            <%- aboutPage.content %>
+          </div>
+        <% } %>
+
+        <% if (theme.blog_button && theme.blog_button.enable) { %>
+          <div class="blog-action-area">
+            <a href="<%= url_for(theme.blog_button.path) %>" class="rounded-blog-btn">
+              <%= theme.blog_button.text %>
+            </a>
+          </div>
+        <% } %>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<% if (theme.subtitle_typed && theme.subtitle_typed.enable && typedSubtitles.length > 0) { %>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      new Typed('#subtitle-typed', {
+        strings: <%- JSON.stringify(typedSubtitles) %>,
+        typeSpeed: <%= theme.subtitle_typed.typeSpeed || 70 %>,
+        backSpeed: <%= theme.subtitle_typed.backSpeed || 40 %>,
+        startDelay: <%= theme.subtitle_typed.startDelay || 300 %>,
+        backDelay: <%= theme.subtitle_typed.backDelay || 1500 %>,
+        loop: <%= theme.subtitle_typed.loop !== false %>
+      });
+    });
+  </script>
+<% } %>
