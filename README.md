@@ -4,15 +4,12 @@
 因为突发奇想想搞一个简单的网页介绍
 但是没有合适的主题
 在现有的主题下修改一直出错
+
 ~~所以跟Gemini畅聊了一晚上~~
 
 灵感来源：
 
-[Butterfly]: https://github.com/jerryc127/hexo-theme-butterfly
-
-、
-
-[Kuri]: https://github.com/kuricl/hexo-theme-kuri
+[Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 、 [Kuri](https://github.com/kuricl/hexo-theme-kuri)
 
 食用方法：下载解压到Hexo\themes目录
 
@@ -28,6 +25,6 @@ title、subtitle、author会被读取
 
 演示站点：
 
-[umr2333.com]: umr2333.com
+[umr2333.com](umr2333.com)
 
 ![show](./show.png)
