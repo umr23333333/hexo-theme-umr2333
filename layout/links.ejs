@@ -1,0 +1,197 @@
+<% if (theme.links && theme.links.enable === false) { %>
+  <!-- 当 links.enable: false 时展示关闭/404提示 -->
+  <div class="mdui-container" style="padding-top: 60px; padding-bottom: 60px;">
+    <div class="mdui-row">
+      <div class="mdui-col-xs-12 mdui-col-md-6 mdui-col-offset-md-3">
+        <div class="custom-card mdui-text-center" style="padding: 40px 20px;">
+          <i class="mdui-icon material-icons" style="font-size: 64px; color: #ccc; margin-bottom: 16px;">block</i>
+          <h2 style="font-size: 1.5rem; color: #555; margin: 0 0 8px 0;">页面已关闭</h2>
+          <p style="color: #888; margin-bottom: 24px;">暂未开启友情链接功能</p>
+          <a href="<%= url_for('/') %>" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent" style="border-radius: 8px;">返回首页</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } else { %>
+  <!-- 正常渲染友情链接页面 -->
+  <style>
+    /* 卡片基础外观（完全匹配主题的圆角与半透明质感） */
+    .custom-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    /* 友链小卡片 hover 效果 */
+    .link-card-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .link-card-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 1. 头像旋转效果 */
+    .link-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .link-card-item:hover .link-avatar {
+      transform: rotate(360deg);
+    }
+
+    /* 2. 文本溢出跑马灯无缝滚动 */
+    .link-desc-container {
+      overflow: hidden;
+      white-space: nowrap;
+      width: 100%;
+      position: relative;
+    }
+
+    .link-desc-text {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .link-card-item:hover .link-desc-text.is-overflow {
+      animation: scroll-text 6s linear infinite;
+    }
+
+    @keyframes scroll-text {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* 正文内容卡片中的元素间距优化 */
+    .links-content-card > *:first-child {
+      margin-top: 0 !important;
+    }
+  </style>
+
+  <div class="mdui-container links-wrapper" style="padding-top: 20px; padding-bottom: 30px;">
+    <div class="mdui-row">
+      <div class="mdui-col-xs-12 mdui-col-md-10 mdui-col-offset-md-1">
+        
+        <!-- 页面标题卡片 -->
+        <% 
+          var pageTitle = page.title || (theme.links && theme.links.title) || '友情链接';
+          var pageIcon = (theme.links && theme.links.icon) || 'link';
+        %>
+        <div class="custom-card" style="margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: bold; color: #333;">
+            <% if (pageIcon) { %>
+              <% if (pageIcon.indexOf('fa') !== -1) { %>
+                <i class="<%= pageIcon %>" style="font-size: 1.1em; display: inline-flex; align-items: center;"></i>
+              <% } else { %>
+                <i class="mdui-icon material-icons" style="font-size: 1.2em; display: inline-flex; align-items: center;"><%= pageIcon %></i>
+              <% } %>
+            <% } %>
+            <span><%= pageTitle %></span>
+          </div>
+        </div>
+
+        <!-- 读取 Hexo 数据文件 /source/_data/links.yml (或 links.json) -->
+        <% 
+          var rawData = site.data.links || site.data.link; 
+          var linksList = [];
+
+          if (rawData) {
+            if (Array.isArray(rawData)) {
+              linksList = rawData;
+            } else if (rawData.link_list && Array.isArray(rawData.link_list)) {
+              linksList = rawData.link_list;
+            } else if (rawData.links && Array.isArray(rawData.links)) {
+              linksList = rawData.links;
+            }
+          }
+        %>
+
+        <!-- 友情链接列表容器 -->
+        <% if (linksList && linksList.length > 0) { %>
+          <div class="mdui-row-xs-1 mdui-row-sm-2 mdui-row-md-3" style="margin-left: -6px; margin-right: -6px;">
+            <% linksList.forEach(function(item) { %>
+              <% var descText = item.descr || item.desc || '暂无描述'; %>
+              <div class="mdui-col" style="padding: 6px;">
+                <a href="<%= item.link %>" target="_blank" rel="noopener" class="link-card-item">
+                  
+                  <!-- 站点 Avatar -->
+                  <div style="flex-shrink: 0; margin-right: 12px; display: flex; align-items: center;">
+                    <img src="<%= item.avatar || url_for('/img/avatar.jpg') %>" 
+                         alt="<%= item.name %>" 
+                         class="link-avatar"
+                         onerror="this.onerror=null;this.src='<%= url_for('/img/avatar.jpg') %>';">
+                  </div>
+
+                  <!-- 站点信息 -->
+                  <div style="overflow: hidden; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-weight: bold; font-size: 1.02rem; color: #222; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px;">
+                      <%= item.name %>
+                    </div>
+                    
+                    <!-- 网站介绍（支持溢出后悬停滚动） -->
+                    <div class="link-desc-container">
+                      <span class="link-desc-text"><%= descText %></span>
+                    </div>
+                  </div>
+
+                </a>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="custom-card mdui-text-center" style="padding: 30px; margin-bottom: 16px; color: #888;">
+            <i class="mdui-icon material-icons" style="font-size: 40px; margin-bottom: 8px;">link_off</i>
+            <div>暂无友情链接数据，请在 <code>/source/_data/links.yml</code> 中配置。</div>
+          </div>
+        <% } %>
+
+        <!-- 页面正文内容 -->
+        <% if (page.content && page.content.trim() !== '') { %>
+          <div class="custom-card links-content-card mdui-typo" style="margin-top: 16px;">
+            <%- page.content %>
+          </div>
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- JS：检测介绍文字是否超长，超长则自动克隆文本实现首尾相接无缝滚动 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var containers = document.querySelectorAll('.link-desc-container');
+      
+      containers.forEach(function(container) {
+        var textSpan = container.querySelector('.link-desc-text');
+        if (!textSpan) return;
+
+        if (textSpan.offsetWidth > container.offsetWidth) {
+          textSpan.classList.add('is-overflow');
+          textSpan.innerHTML = textSpan.innerText + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + textSpan.innerText + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+        }
+      });
+    });
+  </script>
+<% } %>

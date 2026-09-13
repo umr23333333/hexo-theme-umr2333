@@ -1,0 +1,128 @@
+<% 
+  var avatarUrl = theme.avatar || url_for('/img/avatar.jpg');
+
+  var aboutPage = site.pages.findOne({ path: 'about/index.html' });
+  var hasAboutContent = aboutPage && aboutPage.content && aboutPage.content.trim() !== '';
+
+  var typedSubtitles = [];
+  if (theme.subtitle_typed && theme.subtitle_typed.subtitles && theme.subtitle_typed.subtitles.length > 0) {
+    typedSubtitles = theme.subtitle_typed.subtitles;
+  } else if (config.subtitle) {
+    typedSubtitles = [config.subtitle];
+  }
+
+  // 读取配置：默认为 true（开启旋转），只有明确写 avatar_rotate: false 时才关闭
+  var enableAvatarRotate = theme.avatar_rotate !== false;
+%>
+
+<style>
+  /* 头像基础动画过渡 */
+  .profile-avatar-wrapper img,
+  img.profile-avatar {
+    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    will-change: transform;
+  }
+
+  /* 悬停旋转 360 度 (最高优先级) */
+  <% if (enableAvatarRotate) { %>
+    .profile-avatar-wrapper:hover img,
+    .profile-avatar-wrapper:hover .profile-avatar,
+    img.profile-avatar:hover {
+      transform: rotate(360deg) !important;
+    }
+  <% } %>
+</style>
+
+<div class="mdui-container home-wrapper">
+  <div class="mdui-row mdui-valign-center">
+    <div class="mdui-col-xs-12 mdui-col-md-8 mdui-col-offset-md-2">
+      
+      <div class="profile-card">
+        
+        <!-- 头像区域 -->
+        <div class="profile-avatar-wrapper">
+          <img class="profile-avatar" src="<%= avatarUrl %>" alt="<%= config.author %>" />
+        </div>
+
+        <div class="profile-header">
+          <div class="profile-author"><%= config.author %></div>
+          
+          <p class="profile-motto">
+            <% if (theme.subtitle_typed && theme.subtitle_typed.enable && typedSubtitles.length > 0) { %>
+              <span id="subtitle-typed"></span>
+            <% } else { %>
+              <span><%= config.subtitle %></span>
+            <% } %>
+          </p>
+
+          <!-- 社交按钮 -->
+          <% if (theme.social && theme.social.length > 0) { %>
+            <div class="profile-social">
+              <% theme.social.forEach(function(item) { %>
+                <a href="<%= item.link %>" target="_blank" rel="noopener" class="social-icon-btn" mdui-tooltip="{content: '<%= item.name %>'}">
+                  <% if (item.icon.indexOf('fa') !== -1) { %>
+                    <i class="<%= item.icon %>"></i>
+                  <% } else { %>
+                    <i class="mdui-icon material-icons"><%= item.icon %></i>
+                  <% } %>
+                </a>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+
+        <% if (hasAboutContent) { %>
+          <div class="profile-divider"></div>
+          <div class="about-detail mdui-typo">
+            <%- aboutPage.content %>
+          </div>
+        <% } %>
+
+        <!-- 文章/快捷入口按钮区域 -->
+        <% if (theme.blog_button && theme.blog_button.enable) { %>
+          <div class="blog-action-area" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <% 
+              var btnList = (theme.blog_button.items && theme.blog_button.items.length > 0) 
+                            ? theme.blog_button.items 
+                            : [{ name: theme.blog_button.text || '博客文章', link: theme.blog_button.path || '/archives', icon: theme.blog_button.icon }];
+            %>
+            <% btnList.forEach(function(btn) { %>
+              <% 
+                var btnLink = url_for(btn.link || btn.path || '/');
+                var isExternal = btn.link && (btn.link.indexOf('http://') === 0 || btn.link.indexOf('https://') === 0);
+              %>
+              <a href="<%= btnLink %>" class="rounded-blog-btn" <% if (isExternal) { %> target="_blank" rel="noopener" <% } %>>
+                <% if (btn.icon) { %>
+                  <% if (btn.icon.indexOf('fa') !== -1) { %>
+                    <i class="<%= btn.icon %>" style="margin-right: 6px;"></i>
+                  <% } else { %>
+                    <i class="mdui-icon material-icons" style="margin-right: 4px; font-size: 1.1em; vertical-align: middle;"><%= btn.icon %></i>
+                  <% } %>
+                <% } %>
+                <%= btn.name || btn.text %>
+              </a>
+            <% }); %>
+          </div>
+        <% } %>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<% if (theme.subtitle_typed && theme.subtitle_typed.enable && typedSubtitles.length > 0) { %>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      new Typed('#subtitle-typed', {
+        strings: <%- JSON.stringify(typedSubtitles) %>,
+        typeSpeed: <%= theme.subtitle_typed.typeSpeed || 70 %>,
+        backSpeed: <%= theme.subtitle_typed.backSpeed || 40 %>,
+        startDelay: <%= theme.subtitle_typed.startDelay || 300 %>,
+        backDelay: <%= theme.subtitle_typed.backDelay || 1500 %>,
+        loop: <%= theme.subtitle_typed.loop !== false %>
+      });
+    });
+  </script>
+<% } %>

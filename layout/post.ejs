@@ -1,0 +1,13 @@
+<div class="mdui-row main-post-container">
+  <div class="mdui-col-xs-12 mdui-col-md-8 mdui-col-offset-md-2">
+    <article class="post-detail-card">
+      <h1 class="post-detail-title"><%= page.title %></h1>
+      <div class="post-detail-meta">
+        <span>发布于 <%= date(page.date, 'YYYY-MM-DD') %></span>
+      </div>
+      <div class="post-detail-content mdui-typo">
+        <%- page.content %>
+      </div>
+    </article>
+  </div>
+</div>

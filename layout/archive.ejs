@@ -1,0 +1,17 @@
+<div class="mdui-row main-post-container">
+  <div class="mdui-col-xs-12 mdui-col-md-8 mdui-col-offset-md-2">
+    <div class="post-card-list">
+      <h2 class="archive-title">文章归档</h2>
+      
+      <div class="mdui-list">
+        <% page.posts.forEach(function(post){ %>
+          <a href="<%= url_for(post.path) %>" class="post-list-item mdui-ripple">
+            <div class="post-item-title"><%= post.title %></div>
+            <div class="post-item-date"><%= date(post.date, 'YYYY-MM-DD') %></div>
+          </a>
+        <% }); %>
+      </div>
+
+    </div>
+  </div>
+</div>
