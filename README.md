@@ -1,4 +1,5 @@
 # hexo-theme-umr2333
+
 ## 自用hexo主题
 
 因为突发奇想想搞一个简单的网页介绍
@@ -65,7 +66,7 @@ hexo new page about 生成，请自行修改source\about\index.md中的内容
 
 #友情链接页面生成
 
-在你的hexo根目录执行：
+1.在你的hexo根目录执行：
 
 hexo new page links
 
@@ -77,7 +78,23 @@ layout: links
 
 title内容可修改，如 title: 友情链接
 
+下方可写申请友链相关要求
 
+
+
+2.新建文件：(如无文件夹请自行创建)
+
+source\\_data\links.yml
+
+links.yml文件模板：
+
+```bash
+link_list:
+    - name: 飞天鼠鼠大王の小破站
+      link: https://www.umr2333.com/
+      avatar: https://www.umr2333.com/avatar.jpg
+      descr: 𝓐𝓵𝓵 𝓽𝓱𝓮 𝓪𝓬𝓬𝓲𝓭𝓮𝓷𝓽𝓼 𝓲𝓷 𝓵𝓲𝓯𝓮 𝓪𝓻𝓮 𝓪𝓬𝓽𝓾𝓪𝓵𝓵𝔂 𝓹𝓻𝓮𝓭𝓮𝓼𝓽𝓲𝓷𝓮𝓭.
+```
 
 演示站点（可能使用最新测试中版本）：
 
