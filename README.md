@@ -92,7 +92,7 @@ links.yml文件模板：
 link_list:
     - name: 飞天鼠鼠大王の小破站
       link: https://www.umr2333.com/
-      avatar: https://www.umr2333.com/avatar.jpg
+      avatar: https://www.umr2333.com/img/avatar.jpg
       descr: 𝓐𝓵𝓵 𝓽𝓱𝓮 𝓪𝓬𝓬𝓲𝓭𝓮𝓷𝓽𝓼 𝓲𝓷 𝓵𝓲𝓯𝓮 𝓪𝓻𝓮 𝓪𝓬𝓽𝓾𝓪𝓵𝓵𝔂 𝓹𝓻𝓮𝓭𝓮𝓼𝓽𝓲𝓷𝓮𝓭.
 ```
 
