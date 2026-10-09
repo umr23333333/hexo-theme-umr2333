@@ -39,6 +39,18 @@ subtitle_typed:
   loop: true                # 是否循环播放
   subtitles: []             # 自定义多条循环字幕。如果留空，默认直接读取根目录 _config.yml 的 subtitle
 
+# 飘落特效设定
+falling_effect:
+  enable: true         # 是否开启特效 (true: 开启, false: 关闭)
+  type: sakura         # 特效类型: sakura (樱花瓣) 、heart（爱心）或 snow (雪花)
+  count: 30            # 同時飘落的数量 (建议 20-50 之间，不影响页面性能)
+
+# 背景音乐配置
+bgm:
+  enable: true                                      # 是否开启背景音乐功能 (true/false)
+  autoplay: true                                   # 是否默认自动播放 (true/false，注意：部分现代浏览器可能会拦截带声音的自动播放)
+  url: "https://music.163.com/song/media/outer/url?id=1975148640.mp3" # 音乐文件直链 URL (可替换为你的 mp3 地址)
+
 # 社交媒体链接（支持 font-awesome图标）
 social:
   - name: Instagram
