@@ -1,13 +1,64 @@
+<%
+  var hasWaline = theme.waline && theme.waline.enable && theme.waline.serverURL;
+  var enableComments = hasWaline && (page.comments !== false);
+%>
+
 <div class="mdui-row main-post-container">
   <div class="mdui-col-xs-12 mdui-col-md-8 mdui-col-offset-md-2">
     <article class="post-detail-card">
       <h1 class="post-detail-title"><%= page.title %></h1>
-      <div class="post-detail-meta">
-        <span>发布于 <%= date(page.date, 'YYYY-MM-DD') %></span>
+      
+      <div class="post-detail-meta" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: rgba(0, 0, 0, 0.6); font-size: 0.85rem; margin-bottom: 20px; user-select: none;">
+        
+        <span style="display: inline-flex; align-items: center;">
+          <i class="fa-regular fa-calendar" style="margin-right: 5px;"></i>
+          发表于 <%= date(page.date, 'YYYY-MM-DD') %>
+        </span>
+
+        <span style="opacity: 0.4;">|</span>
+
+        <span style="display: inline-flex; align-items: center;">
+          <i class="fa-solid fa-history" style="margin-right: 5px;"></i>
+          更新于 <%= date(page.updated, 'YYYY-MM-DD') %>
+        </span>
+
+        <span style="opacity: 0.4;">|</span>
+
+        <% if (hasWaline) { %>
+          <span style="display: inline-flex; align-items: center;">
+            <i class="fa-regular fa-eye" style="margin-right: 5px;"></i>
+            浏览量: <span class="waline-pageview-count" style="margin-left: 3px;">-</span>
+          </span>
+        <% } else { %>
+          <span id="busuanzi_container_page_pv" style="display: inline-flex; align-items: center;">
+            <i class="fa-regular fa-eye" style="margin-right: 5px;"></i>
+            浏览量: <span id="busuanzi_value_page_pv" style="margin-left: 3px;">-</span>
+          </span>
+        <% } %>
+
       </div>
+
       <div class="post-detail-content mdui-typo">
         <%- page.content %>
       </div>
+
+      <% if (enableComments) { %>
+        <div class="post-comments-section" style="margin-top: 40px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 30px;">
+          <h3 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 600;">评论区</h3>
+          <div id="waline"></div>
+        </div>
+      <% } %>
+
     </article>
   </div>
 </div>
+
+<style>
+  html.dark .post-detail-meta {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+  html.dark .post-comments-section {
+    border-top-color: rgba(255, 255, 255, 0.1) !important;
+  }
+</style>
+

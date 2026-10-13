@@ -1,0 +1,189 @@
+<%
+  var firstPost = site.posts.sort('date', 1).data[0];
+  var defaultSince = (theme.since) ? theme.since : (firstPost ? firstPost.date.format('YYYY-MM-DD HH:mm:ss') : '2025-01-01 00:00:00');
+  var hasWaline = theme.waline && theme.waline.enable && theme.waline.serverURL;
+%>
+<div class="mdui-row main-post-container" data-dashboard-since="<%= defaultSince %>">
+  <div class="mdui-col-xs-12 mdui-col-md-8 mdui-col-offset-md-2">
+    <article class="post-detail-card" style="padding: 30px;">
+      <h1 class="post-detail-title" style="margin-bottom: 20px;"><%= page.title %></h1>
+      
+      <div class="post-detail-content mdui-typo">
+        <p>欢迎来到站点数据统计与仪表盘中心。这里实时展示着本站的各项内容资产与访问数据。</p>
+
+        <!-- 1. 博客内容资产 -->
+        <h3 style="margin-top: 30px; font-size: 1.2rem; font-weight: 600;">📦 博客内容资产</h3>
+        <div class="site-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 15px 0 30px 0;">
+          
+          <!-- 文章总数 -->
+          <div class="stat-card" style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); text-align: center;">
+            <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
+              <i class="fa-solid fa-file-lines" style="margin-right: 5px;"></i> 文章总数
+            </div>
+            <div style="font-size: 1.4rem; font-weight: bold;">
+              <%= site.posts.length %> 篇
+            </div>
+          </div>
+
+          <!-- 全站总字数 -->
+          <% 
+            var totalWords = 0;
+            site.posts.forEach(function(post) {
+              if (post.content) {
+                totalWords += strip_html(post.content).length;
+              }
+            });
+          %>
+          <div class="stat-card" style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); text-align: center;">
+            <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
+              <i class="fa-solid fa-feather-pointed" style="margin-right: 5px;"></i> 全站总字数
+            </div>
+            <div style="font-size: 1.4rem; font-weight: bold;">
+              <%= (totalWords > 10000) ? (totalWords / 10000).toFixed(1) + 'w' : totalWords %> 字
+            </div>
+          </div>
+
+          <!-- 最后更新时间 -->
+          <% 
+            var lastUpdated = site.posts.sort('updated', -1).data[0];
+          %>
+          <div class="stat-card" style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); text-align: center;">
+            <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
+              <i class="fa-solid fa-clock-rotate-left" style="margin-right: 5px;"></i> 最后更新
+            </div>
+            <div style="font-size: 1.05rem; font-weight: bold; margin-top: 5px;">
+              <%= lastUpdated ? date(lastUpdated.updated, 'YYYY-MM-DD') : '无' %>
+            </div>
+          </div>
+
+          <!-- 智能获取建站时间的运行时间统计 -->
+          <div class="stat-card" style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); text-align: center;">
+            <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
+              <i class="fa-solid fa-hourglass-start" style="margin-right: 5px;"></i> 运行时间
+            </div>
+            <div id="runtime" style="font-size: 0.95rem; font-weight: bold; margin-top: 5px; line-height: 1.4;">
+              计算中...
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2. 年度动态进度条 -->
+        <h3 style="margin-top: 30px; font-size: 1.2rem; font-weight: 600;">⏳ 年度进度</h3>
+        <div class="stat-card" style="padding: 20px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); margin: 15px 0 30px 0;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: rgba(0,0,0,0.6); margin-bottom: 8px;">
+            <span><i class="fa-regular fa-calendar-days" style="margin-right: 5px;"></i> <span id="current-year-label">今年</span>已过去</span>
+            <span id="year-progress-text" style="font-weight: bold; color: inherit;">0%</span>
+          </div>
+          <!-- 进度条轨道 -->
+          <div style="width: 100%; height: 10px; background: rgba(0,0,0,0.08); border-radius: 5px; overflow: hidden;">
+            <div id="year-progress-bar" style="width: 0%; height: 100%; background: #3f51b5; border-radius: 5px; transition: width 0.5s ease;"></div>
+          </div>
+        </div>
+
+        <!-- 3. 实时访问数据（三卡片豪华版：UV + PV + 评论总数） -->
+        <h3 style="margin-top: 30px; font-size: 1.2rem; font-weight: 600;">📊 实时访问数据</h3>
+        <div class="site-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin: 15px 0;">
+          
+          <!-- 独立访客 (UV) —— 借助不蒜子提供 -->
+          <div class="stat-card" style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); text-align: center;">
+            <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
+              <i class="fa-solid fa-users" style="margin-right: 5px;"></i> 本站总访客数 (UV)
+            </div>
+            <div id="busuanzi_container_site_uv" style="font-size: 1.4rem; font-weight: bold;">
+              <span id="busuanzi_value_site_uv">-</span>
+            </div>
+          </div>
+
+          <!-- 站点总访问量 (PV) -->
+          <div class="stat-card" style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); text-align: center;">
+            <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
+              <i class="fa-solid fa-eye" style="margin-right: 5px;"></i> 站点总访问量 (PV)
+            </div>
+            <div style="font-size: 1.4rem; font-weight: bold;">
+              <% if (hasWaline) { %>
+                <span class="waline-pageview-count" data-path="/">-</span>
+              <% } else { %>
+                <span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- 全站评论总数（仅在开启 Waline 时显示） -->
+          <% if (hasWaline) { %>
+            <div class="stat-card" style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid rgba(0,0,0,0.06); text-align: center;">
+              <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
+                <i class="fa-solid fa-comments" style="margin-right: 5px;"></i> 全站评论总数
+              </div>
+              <div style="font-size: 1.4rem; font-weight: bold;">
+                <span class="waline-comment-count">-</span>
+              </div>
+            </div>
+          <% } %>
+
+        </div>
+
+        <%- page.content %>
+      </div>
+
+      <!-- 评论区 -->
+      <% if (hasWaline && page.comments !== false) { %>
+        <div class="post-comments-section" style="margin-top: 40px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 30px;">
+          <h3 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 600;">留言板</h3>
+          <div id="waline"></div>
+        </div>
+      <% } %>
+
+    </article>
+  </div>
+</div>
+
+<!-- 樣式與動態計算腳本 -->
+<style>
+  html.dark .stat-card {
+    background: rgba(255,255,255,0.03) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    color: #fff;
+  }
+  html.dark .stat-card div {
+    color: rgba(255,255,255,0.6) !important;
+  }
+  html.dark .post-comments-section {
+    border-top-color: rgba(255, 255, 255, 0.1) !important;
+  }
+</style>
+
+<!-- 引入不蒜子脚本以支持 UV 数据 -->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<% if (hasWaline && page.comments !== false) { %>
+  <link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css"/>
+  <script type="module">
+    import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
+    
+    let walineInstance = null;
+    window.initWaline = function() {
+      const walineEl = document.getElementById('waline');
+      if (!walineEl) return;
+      
+      if (walineInstance && typeof walineInstance.destroy === 'function') {
+        walineInstance.destroy();
+      }
+      walineInstance = null;
+
+      walineInstance = init({
+        el: '#waline',
+        serverURL: '<%= theme.waline.serverURL %>',
+        path: window.location.pathname,
+        reaction: true,
+        pageview: false,
+        comment: true,
+        meta: ['nick', 'mail', 'link'],
+        requiredMeta: ['nick'],
+        lang: 'zh-CN',
+      });
+    };
+
+    window.initWaline();
+  </script>
+<% } %>

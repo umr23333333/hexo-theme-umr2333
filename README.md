@@ -11,7 +11,7 @@
 
 [Butterfly](https://github.com/jerryc127/hexo-theme-butterfly) 、 [Kuri](https://github.com/kuricl/hexo-theme-kuri)
 
-
+<br>
 
 主题特性：
 
@@ -21,7 +21,7 @@
 
 自定义友情链接页面
 
-
+<br>
 
 食用方法：
 
@@ -33,9 +33,9 @@ git clone -b master https://github.com/umr23333333/hexo-theme-umr2333.git themes
 
 或手动下载解压到Hexo\themes目录，文件夹命名为umr2333
 
+<br>
 
-
-2.（可选）修改Hexo根目录下_config.yml 选项 theme: umr2333
+2.修改Hexo根目录下_config.yml 选项 theme: umr2333
 
 在 hexo 的根目录创建一个文件 _config.umr2333.yml，并把**主题目录的 _config.yml** 内容复制到 _config.umr2333.yml
 
@@ -43,37 +43,41 @@ git clone -b master https://github.com/umr23333333/hexo-theme-umr2333.git themes
 
 如果不做这步配置请修改Hexo\themes\umr2333\\_config.yml中的内容，做了的话可以直接修改根目录下 _config.umr2333.yml中的内容
 
-
+<br>
 
 3.修改Hexo根目录下_config.yml中的theme
 
+```bash
 theme: umr2333
+```
 
-
+<br>
 
 4.修改Hexo根目录下_config.yml中的title、subtitle、author等内容
-
-
 
 #个人介绍页面生成
 
 在你的hexo根目录执行：
-
-hexo new page about 生成，请自行修改source\about\index.md中的内容
-
-
+```bash
+hexo new page about 
+```
+生成，请自行修改source\about\index.md中的内容
 
 #友情链接页面生成
 
 1.在你的hexo根目录执行：
 
+```bash
 hexo new page links
+```
 
 修改source\links\index.md
 
 在title: links下方另起一行：
 
+```bash
 layout: links
+```
 
 title内容可修改，如 title: 友情链接
 
@@ -86,6 +90,7 @@ title内容可修改，如 title: 友情链接
 source\\_data\links.yml
 
 links.yml文件模板：
+
 ```bash
 link_list:
     - name: 飞天鼠鼠大王の小破站
@@ -93,11 +98,58 @@ link_list:
       avatar: https://www.umr2333.com/avatar.jpg
       descr: 𝓐𝓵𝓵 𝓽𝓱𝓮 𝓪𝓬𝓬𝓲𝓭𝓮𝓷𝓽𝓼 𝓲𝓷 𝓵𝓲𝓯𝓮 𝓪𝓻𝓮 𝓪𝓬𝓽𝓾𝓪𝓵𝓵𝔂 𝓹𝓻𝓮𝓭𝓮𝓼𝓽𝓲𝓷𝓮𝓭.
 ```
+
+<br>
+
+#评论系统
+
+评论系统可在_config.umr2333.yml中# Waline 评论与浏览量统计配置 选项中配置，关于Waline评论系统可自行前往[官方仓库](https://github.com/walinejs/waline)及[官方文档](https://waline.js.org/)进行了解。如果想关闭评论区，请在Front-matter中添加一行
+
+``` bash
+comment：false
+```
+
+<br>
+
+#站点统计
+
+站点统计功能中的运行时间读取_config.umr2333.yml中# 网站建站时间（如果不填，会自动读取博客第一篇文章的发表日期）
+
+<br>
+
+文章置顶功能：请在Front-matter中添加一行
+
+``` bash
+top：1
+```
+
+top后跟的数字是序号，比如上面的top: 1为置顶到第一个
+
+<br>
+
+#站点统计页面新建：
+
+请在你的博客根目录执行：
+
+``` bash
+hexo new page stats
+```
+
+打开新生成的source\stats\index.md文件
+
+请在Front-matter中添加一行
+
+``` bash
+layout：stats
+```
+
+<br>
+
 演示站点（可能使用最新测试中版本）：
 
 [umr2333.com](https://www.umr2333.com)
 
-![show](./show.png)
-![show](./links.png)
+![show](/show.png)
+![show](/links.png)
 
 *素材所用背景、头像、图标等内容来源于互联网，版权归原作者所有
