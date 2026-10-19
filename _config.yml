@@ -22,6 +22,9 @@ menu:
   - name: "归档 / 文章"
     link: "/archives/"
     icon: "archive"
+  - name: "搜索"
+    link: "/search/"
+    icon: "fa fa-search"
   - name: "关于"
     link: "/about/"
     icon: "fas fa-user" # 也支持 Font Awesome 类名

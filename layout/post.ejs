@@ -7,9 +7,9 @@
   <div class="mdui-col-xs-12 mdui-col-md-8 mdui-col-offset-md-2">
     <article class="post-detail-card">
       <h1 class="post-detail-title"><%= page.title %></h1>
-      
+
       <div class="post-detail-meta" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: rgba(0, 0, 0, 0.6); font-size: 0.85rem; margin-bottom: 20px; user-select: none;">
-        
+
         <span style="display: inline-flex; align-items: center;">
           <i class="fa-regular fa-calendar" style="margin-right: 5px;"></i>
           发表于 <%= date(page.date, 'YYYY-MM-DD') %>
@@ -36,11 +36,60 @@
           </span>
         <% } %>
 
+      
       </div>
+
+      <% if (page.tags && page.tags.length > 0) { %>
+        <div class="post-detail-tags" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 24px;">
+          <span style="font-size: 0.85rem; color: rgba(0, 0, 0, 0.6);">标签：</span>
+          <% page.tags.toArray().forEach(function(tag) { %>
+            <a href="<%= url_for(tag.path) %>" class="post-tag-link" style="display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; text-decoration: none; color: #3988d6; background: rgba(57, 136, 214, 0.1); transition: all 0.2s;">
+              # <%= tag.name %>
+            </a>
+          <% }); %>
+        </div>
+        <style>
+          html.dark .post-detail-tags > span {
+            color: rgba(255, 255, 255, 0.6) !important;
+          }
+          .post-tag-link:hover {
+            background: rgba(57, 136, 214, 0.2) !important;
+          }
+        </style>
+      <% } %>
 
       <div class="post-detail-content mdui-typo">
         <%- page.content %>
       </div>
+
+///添加上一篇下一篇
+
+      <nav class="post-prev-next" style="display: flex; justify-content: space-between; gap: 16px; margin-top: 36px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.08);">
+        <% if (page.prev) { %>
+          <a href="<%= url_for(page.prev.path) %>" style="flex: 1; min-width: 0; text-decoration: none; color: inherit;">
+            <span style="display: block; font-size: 0.8rem; opacity: 0.6; margin-bottom: 6px;">← 上一篇</span>
+            <span style="display: block; overflow-wrap: anywhere;"><%= page.prev.title %></span>
+          </a>
+        <% } else { %>
+          <span style="flex: 1;"></span>
+        <% } %>
+
+        <% if (page.next) { %>
+          <a href="<%= url_for(page.next.path) %>" style="flex: 1; min-width: 0; text-align: right; text-decoration: none; color: inherit;">
+            <span style="display: block; font-size: 0.8rem; opacity: 0.6; margin-bottom: 6px;">下一篇 →</span>
+            <span style="display: block; overflow-wrap: anywhere;"><%= page.next.title %></span>
+          </a>
+        <% } %>
+      </nav>
+
+      <style>
+        html.dark .post-prev-next {
+          border-top-color: rgba(255, 255, 255, 0.12) !important;
+        }
+        .post-prev-next a:hover {
+          color: #3988d6 !important;
+        }
+      </style>
 
       <% if (enableComments) { %>
         <div class="post-comments-section" style="margin-top: 40px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 30px;">
@@ -62,3 +111,33 @@
   }
 </style>
 
+<% if (enableComments) { %>
+  <link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css"/>
+  <script type="module">
+    import { init } from 'https://unpkg.com/@waline/client@v2/dist/waline.mjs';
+
+    window.initWaline = function() {
+      const walineEl = document.getElementById('waline');
+      if (!walineEl) return;
+      walineEl.innerHTML = '';
+
+      init({
+        el: '#waline',
+        serverURL: '<%= theme.waline.serverURL %>',
+        path: window.location.pathname,
+        reaction: true,
+        pageview: true,
+        comment: true,
+        meta: ['nick', 'mail', 'link'],
+        requiredMeta: ['nick'],
+        lang: 'zh-CN',
+      });
+    };
+
+    window.initWaline();
+  </script>
+<% } %>
+
+<% if (!hasWaline) { %>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<% } %>

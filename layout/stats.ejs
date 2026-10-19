@@ -51,8 +51,8 @@
             <div style="font-size: 0.85rem; color: rgba(0,0,0,0.6); margin-bottom: 5px;">
               <i class="fa-solid fa-clock-rotate-left" style="margin-right: 5px;"></i> 最后更新
             </div>
-            <div style="font-size: 1.05rem; font-weight: bold; margin-top: 5px;">
-              <%= lastUpdated ? date(lastUpdated.updated, 'YYYY-MM-DD') : '无' %>
+            <div style="font-size: 1.05rem; font-weight: bold; margin-top: 5px; white-space: nowrap;">
+                <%= lastUpdated ? date(lastUpdated.updated, 'YYYY-MM-DD hh:mm A') : '无' %>
             </div>
           </div>
 

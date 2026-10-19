@@ -145,6 +145,32 @@ layout：stats
 
 <br>
 
+#搜索页面新建：
+
+请在你的博客根目录执行：
+
+``` bash
+hexo new page search
+```
+
+打开新生成的source\search\index.md文件
+
+请在Front-matter中添加两行
+
+``` bash
+layout：search
+comments: false
+```
+
+<br>
+如果希望每篇文章都有更准确的预览简介，可以在对应文章的 Front-Matter中添加：
+
+``` bash
+description: 这是一段显示在 Telegram 链接预览中的文章简介。
+cover: /img/example-cover.jpg //预览显示的图片
+```
+
+<br>
 演示站点（可能使用最新测试中版本）：
 
 [umr2333.com](https://www.umr2333.com)

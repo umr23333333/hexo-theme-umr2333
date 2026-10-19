@@ -3,6 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<%
+    // Open Graph / Twitter Card：提供 Telegram 等平台抓取分享预览所需的元信息
+    var ogTitle = page.title
+      ? page.title + ' - ' + config.title
+      : config.title + (config.subtitle ? ' - ' + config.subtitle : '');
+
+    // 优先使用页面描述或摘要；清除 HTML 标签并压缩空白，避免预览描述带有源码标记
+    var ogDescriptionSource = page.description || page.excerpt || config.description || config.title || '';
+    var ogDescription = String(ogDescriptionSource)
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 300);
+
+    // 优先使用文章封面，其次使用主题默认封面，最后使用站点头像
+    var ogImageSource = page.cover || theme.default_cover || url_for('/img/avatar.jpg');
+    var ogBaseUrl = String(config.url || '').replace(/\/+$/, '');
+
+    // 将相对地址转成绝对地址，社交平台才能直接抓取图片和页面
+    var makeAbsoluteUrl = function (value) {
+      value = String(value || '').trim();
+      if (!value) return '';
+      if (/^https?:\/\//i.test(value)) return value;
+      if (value.indexOf('//') === 0) return 'https:' + value;
+      try {
+        return new URL(value, ogBaseUrl + '/').href;
+      } catch (e) {
+        return ogBaseUrl + '/' + value.replace(/^\/+/, '');
+      }
+    };
+
+    var ogImage = makeAbsoluteUrl(ogImageSource);
+    var ogUrl = makeAbsoluteUrl(page.permalink || config.url || '/');
+    var ogType = page.title ? 'article' : 'website';
+  %>
+  <meta name="description" content="<%= ogDescription %>">
+  <meta property="og:type" content="<%= ogType %>">
+  <meta property="og:title" content="<%= ogTitle %>">
+  <meta property="og:description" content="<%= ogDescription %>">
+  <meta property="og:url" content="<%= ogUrl %>">
+  <meta property="og:site_name" content="<%= config.title %>">
+  <meta property="og:locale" content="zh_CN">
+  <% if (ogImage) { %>
+    <meta property="og:image" content="<%= ogImage %>">
+    <meta property="og:image:secure_url" content="<%= ogImage %>">
+    <meta property="og:image:alt" content="<%= ogTitle %>">
+  <% } %>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= ogTitle %>">
+  <meta name="twitter:description" content="<%= ogDescription %>">
+  <% if (ogImage) { %>
+    <meta name="twitter:image" content="<%= ogImage %>">
+    <meta name="twitter:image:alt" content="<%= ogTitle %>">
+  <% } %>
 
   <!-- 引入 Pjax 库 -->
   <script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script>
@@ -243,7 +297,7 @@
       <ul class="mdui-list">
         <% if (theme.menu && theme.menu.length > 0) { %>
           <% theme.menu.forEach(function(item) { %>
-            <a href="<%= url_for(item.link) %>" class="mdui-list-item mdui-ripple">
+            <a href="<%= url_for(item.link) %>" class="mdui-list-item mdui-ripple" mdui-drawer-close>
               <% if (item.icon) { %>
                 <% if (item.icon.indexOf('fa') !== -1) { %>
                   <i class="mdui-list-item-icon <%= item.icon %>" style="display: flex; align-items: center; justify-content: center; font-size: 1.25rem;"></i>
@@ -272,7 +326,7 @@
       </div>
     <% } %>
     <div class="footer-copyright">
-      Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> | Theme by <a href="https://github.com/umr23333333/hexo-theme-umr2333" target="_blank" rel="noopener">umr2333 1.3.2 Beta</a>
+      Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> | Theme by <a href="https://github.com/umr23333333/hexo-theme-umr2333" target="_blank" rel="noopener">umr2333 1.3.3 Beta</a>
     </div>
   </footer>
 
